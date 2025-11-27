@@ -20,15 +20,20 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, onToggle, onDelete, o
 
     if (filteredTodos.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-                <ClipboardList className="w-16 h-16 mb-4 opacity-50" />
-                <p className="text-lg">No tasks found</p>
+            <div className="flex flex-col items-center justify-center py-16 text-slate-400 animate-fade-in">
+                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                    <ClipboardList className="w-10 h-10 opacity-50 text-slate-300" />
+                </div>
+                <p className="text-lg font-medium text-slate-500">No tasks found</p>
+                <p className="text-sm text-slate-400 mt-1">
+                    {filter === 'all' ? "Get started by adding a new task above!" : `No ${filter} tasks to show.`}
+                </p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-1">
             {filteredTodos.map((todo) => (
                 <TodoItem
                     key={todo.id}

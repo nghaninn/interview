@@ -77,5 +77,6 @@ terragrunt apply
   - Frontend loads successfully at `http://localhost:5173`.
   - Backend connects to local DynamoDB (Docker).
   - **Verified**: Successfully added task "Buy milk".
+  - **Verified**: New Design Overhaul (Gradient background, Glassmorphism, Animations).
 
-![Add Task Verification](/Users/nghaninn/.gemini/antigravity/brain/f774f934-5fc1-4ada-a961-4af9fa5defa5/verify_add_task_1764216232866.webp)
+![New Design Verification](/Users/nghaninn/.gemini/antigravity/brain/f774f934-5fc1-4ada-a961-4af9fa5defa5/verify_new_design_1764255773180.webp)

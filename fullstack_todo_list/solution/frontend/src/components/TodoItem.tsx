@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Trash2, Edit2, Check, X, CheckCircle, Circle } from 'lucide-react';
+import { Trash2, Edit2, Check, X, Calendar } from 'lucide-react';
 import type { Todo, UpdateTodoRequest } from '../types';
 import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 
 interface TodoItemProps {
     todo: Todo;
@@ -30,90 +29,104 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete, on
     };
 
     return (
-        <div className={twMerge(
-            "flex flex-col p-4 mb-3 bg-white rounded-lg shadow-sm border border-gray-200 transition-all hover:shadow-md",
-            todo.completed && "bg-gray-50 opacity-75"
+        <div className={clsx(
+            "group relative flex flex-col p-5 mb-3 bg-white rounded-xl border transition-all duration-200 animate-fade-in",
+            todo.completed
+                ? "bg-slate-50 border-slate-100"
+                : "border-slate-100 hover:border-primary-100 hover:shadow-md"
         )}>
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-4">
                 <button
                     onClick={() => onToggle(todo.id)}
-                    className="mt-1 text-gray-400 hover:text-green-500 transition-colors focus:outline-none"
-                >
-                    {todo.completed ? (
-                        <CheckCircle className="w-6 h-6 text-green-500" />
-                    ) : (
-                        <Circle className="w-6 h-6" />
+                    className={clsx(
+                        "mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20",
+                        todo.completed
+                            ? "bg-green-500 border-green-500 text-white scale-100"
+                            : "border-slate-300 text-transparent hover:border-primary-400"
                     )}
+                >
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
                 </button>
 
                 <div className="flex-1 min-w-0">
                     {isEditing ? (
-                        <div className="space-y-2">
+                        <div className="space-y-3 animate-fade-in">
                             <input
                                 type="text"
                                 value={editTitle}
                                 onChange={(e) => setEditTitle(e.target.value)}
-                                className="w-full px-2 py-1 text-lg font-medium border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 text-base font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
                                 autoFocus
                             />
                             <textarea
                                 value={editDescription}
                                 onChange={(e) => setEditDescription(e.target.value)}
-                                className="w-full px-2 py-1 text-sm text-gray-600 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                className="w-full px-3 py-2 text-sm text-slate-600 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all resize-none"
                                 rows={2}
                                 placeholder="Description (optional)"
                             />
-                            <div className="flex gap-2 mt-2">
-                                <button
-                                    onClick={handleUpdate}
-                                    className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 flex items-center gap-1"
-                                >
-                                    <Check className="w-4 h-4" /> Save
-                                </button>
+                            <div className="flex gap-2 justify-end">
                                 <button
                                     onClick={handleCancel}
-                                    className="px-3 py-1 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200 flex items-center gap-1"
+                                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors flex items-center gap-1"
                                 >
-                                    <X className="w-4 h-4" /> Cancel
+                                    <X className="w-3.5 h-3.5" /> Cancel
+                                </button>
+                                <button
+                                    onClick={handleUpdate}
+                                    className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-md transition-colors flex items-center gap-1"
+                                >
+                                    <Check className="w-3.5 h-3.5" /> Save
                                 </button>
                             </div>
                         </div>
                     ) : (
-                        <div className="group">
+                        <div className="group/content">
                             <h3 className={clsx(
-                                "text-lg font-medium text-gray-900 break-words",
-                                todo.completed && "line-through text-gray-500"
+                                "text-lg font-medium break-words transition-all duration-200",
+                                todo.completed ? "text-slate-400 line-through decoration-slate-300" : "text-slate-800"
                             )}>
                                 {todo.title}
                             </h3>
                             {todo.description && (
                                 <p className={clsx(
-                                    "mt-1 text-sm text-gray-600 break-words whitespace-pre-wrap",
-                                    todo.completed && "line-through text-gray-400"
+                                    "mt-1 text-sm break-words whitespace-pre-wrap transition-all duration-200",
+                                    todo.completed ? "text-slate-300" : "text-slate-500"
                                 )}>
                                     {todo.description}
                                 </p>
                             )}
-                            <div className="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity md:opacity-0 opacity-100">
-                                <button
-                                    onClick={() => setIsEditing(true)}
-                                    className="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1"
-                                >
-                                    <Edit2 className="w-3 h-3" /> Edit
-                                </button>
-                                <button
-                                    onClick={() => onDelete(todo.id)}
-                                    className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1"
-                                >
-                                    <Trash2 className="w-3 h-3" /> Delete
-                                </button>
+
+                            <div className="flex items-center justify-between mt-3">
+                                <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                                    <Calendar className="w-3.5 h-3.5" />
+                                    {new Date(todo.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                </div>
+
+                                <div className={clsx(
+                                    "flex gap-1 transition-all duration-200",
+                                    "opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0",
+                                    "md:opacity-0 opacity-100 translate-y-0" // Always visible on mobile
+                                )}>
+                                    <button
+                                        onClick={() => setIsEditing(true)}
+                                        className="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
+                                        title="Edit"
+                                    >
+                                        <Edit2 className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => onDelete(todo.id)}
+                                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                        title="Delete"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}
                 </div>
-            </div>
-            <div className="mt-2 text-xs text-gray-400 text-right">
-                {new Date(todo.createdAt).toLocaleDateString()}
             </div>
         </div>
     );
