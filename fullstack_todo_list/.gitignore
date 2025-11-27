@@ -59,3 +59,4 @@ Thumbs.db
 *.js
 !*.config.js
 !jest.config.js
+solution/docker/
