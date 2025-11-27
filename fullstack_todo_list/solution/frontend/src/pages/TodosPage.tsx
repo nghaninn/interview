@@ -79,7 +79,7 @@ export const TodosPage: React.FC = () => {
                 <header className="mb-10 text-center sm:text-left sm:flex sm:items-end sm:justify-between animate-slide-up">
                     <div>
                         <h1 className="text-4xl font-bold text-slate-900 tracking-tight mb-2 flex items-center gap-3 justify-center sm:justify-start">
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-400">
                                 My Tasks
                             </span>
                         </h1>
@@ -89,7 +89,7 @@ export const TodosPage: React.FC = () => {
                     </div>
                     <div className="mt-4 sm:mt-0 flex gap-4 text-sm font-medium text-slate-600 bg-white/50 px-4 py-2 rounded-full backdrop-blur-sm border border-white/50 shadow-sm">
                         <div className="flex items-center gap-1.5">
-                            <ListTodo className="w-4 h-4 text-primary-500" />
+                            <ListTodo className="w-4 h-4 text-indigo-500" />
                             <span>{activeCount} Active</span>
                         </div>
                         <div className="w-px h-4 bg-slate-300 my-auto"></div>
@@ -110,10 +110,10 @@ export const TodosPage: React.FC = () => {
                                     key={f}
                                     onClick={() => setFilter(f)}
                                     className={clsx(
-                                        "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap",
+                                        "px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 whitespace-nowrap",
                                         filter === f
-                                            ? "bg-primary-600 text-white shadow-md shadow-primary-500/20"
-                                            : "text-slate-600 hover:bg-white hover:text-primary-600"
+                                            ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
+                                            : "text-slate-700 hover:bg-white hover:text-indigo-700"
                                     )}
                                 >
                                     {f.charAt(0).toUpperCase() + f.slice(1)}

@@ -33,16 +33,16 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete, on
             "group relative flex flex-col p-5 mb-3 bg-white rounded-xl border transition-all duration-200 animate-fade-in",
             todo.completed
                 ? "bg-slate-50 border-slate-100"
-                : "border-slate-100 hover:border-primary-100 hover:shadow-md"
+                : "border-slate-100 hover:border-indigo-100 hover:shadow-md"
         )}>
             <div className="flex items-start gap-4">
                 <button
                     onClick={() => onToggle(todo.id)}
                     className={clsx(
-                        "mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20",
+                        "mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20",
                         todo.completed
                             ? "bg-green-500 border-green-500 text-white scale-100"
-                            : "border-slate-300 text-transparent hover:border-primary-400"
+                            : "border-slate-300 text-transparent hover:border-indigo-400"
                     )}
                 >
                     <Check className="w-3.5 h-3.5 stroke-[3]" />
@@ -55,13 +55,13 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete, on
                                 type="text"
                                 value={editTitle}
                                 onChange={(e) => setEditTitle(e.target.value)}
-                                className="w-full px-3 py-2 text-base font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+                                className="w-full px-3 py-2 text-base font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                                 autoFocus
                             />
                             <textarea
                                 value={editDescription}
                                 onChange={(e) => setEditDescription(e.target.value)}
-                                className="w-full px-3 py-2 text-sm text-slate-600 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all resize-none"
+                                className="w-full px-3 py-2 text-sm text-slate-600 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none"
                                 rows={2}
                                 placeholder="Description (optional)"
                             />
@@ -74,7 +74,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete, on
                                 </button>
                                 <button
                                     onClick={handleUpdate}
-                                    className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-md transition-colors flex items-center gap-1"
+                                    className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors flex items-center gap-1"
                                 >
                                     <Check className="w-3.5 h-3.5" /> Save
                                 </button>
@@ -103,14 +103,10 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete, on
                                     {new Date(todo.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                                 </div>
 
-                                <div className={clsx(
-                                    "flex gap-1 transition-all duration-200",
-                                    "opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0",
-                                    "md:opacity-0 opacity-100 translate-y-0" // Always visible on mobile
-                                )}>
+                                <div className="flex gap-1">
                                     <button
                                         onClick={() => setIsEditing(true)}
-                                        className="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
+                                        className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
                                         title="Edit"
                                     >
                                         <Edit2 className="w-4 h-4" />
