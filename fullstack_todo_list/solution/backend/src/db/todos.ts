@@ -1,6 +1,6 @@
 import { PutCommand, ScanCommand, GetCommand, DeleteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
-import { dynamoDB, TABLE_NAME } from "./dynamodb";
+import { docClient, TABLE_NAME } from "./dynamodb";
 import { Todo, CreateTodoRequest, UpdateTodoRequest } from "../types";
 
 export const getAllTodos = async (): Promise<Todo[]> => {
@@ -8,7 +8,7 @@ export const getAllTodos = async (): Promise<Todo[]> => {
         TableName: TABLE_NAME,
     });
 
-    const response = await dynamoDB.send(command);
+    const response = await docClient.send(command);
     return (response.Items as Todo[]) || [];
 };
 
@@ -18,7 +18,7 @@ export const getTodoById = async (id: string): Promise<Todo | null> => {
         Key: { id },
     });
 
-    const response = await dynamoDB.send(command);
+    const response = await docClient.send(command);
     return (response.Item as Todo) || null;
 };
 
@@ -41,7 +41,7 @@ export const createTodo = async (todo: CreateTodoRequest): Promise<Todo> => {
         Item: newTodo,
     });
 
-    await dynamoDB.send(command);
+    await docClient.send(command);
     return newTodo;
 };
 
@@ -81,7 +81,7 @@ export const updateTodo = async (id: string, updates: UpdateTodoRequest): Promis
     });
 
     try {
-        const response = await dynamoDB.send(command);
+        const response = await docClient.send(command);
         return response.Attributes as Todo;
     } catch (error) {
         return null;
@@ -94,6 +94,6 @@ export const deleteTodo = async (id: string): Promise<boolean> => {
         Key: { id },
     });
 
-    await dynamoDB.send(command);
+    await docClient.send(command);
     return true;
 };
