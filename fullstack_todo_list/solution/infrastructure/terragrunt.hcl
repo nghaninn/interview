@@ -9,6 +9,6 @@ remote_state {
     key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "ap-southeast-1"
     encrypt        = true
-    dynamodb_table = "terraform-locks"
+    dynamodb_table = "todo-app-terraform-locks"
   }
 }

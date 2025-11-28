@@ -1,96 +1,116 @@
 # Deployment Guide
 
-This guide covers how to test the deployment locally using Docker and how to deploy to AWS.
+This guide covers how to run the application locally for development and how to deploy it to AWS.
 
-## 1. Local Production Testing (Docker)
+## 1. Local Development
 
-Before deploying to the cloud, you can simulate the production environment locally using Docker Compose.
+Follow these steps to run the full stack application locally.
 
-### Steps
-1.  **Stop existing development servers**:
-    If you have `npm run dev` or the local DynamoDB running, stop them (Ctrl+C).
+### Prerequisites
+- Node.js (v18+)
+- Docker (for local DynamoDB)
 
-2.  **Build and Run**:
-    ```bash
-    cd solution
-    docker compose -f docker-compose.prod.yml up --build -d
-    ```
+### Step 1: Start Local Database
+Start the local DynamoDB instance using Docker Compose.
 
-3.  **Verify**:
-    - **Frontend**: [http://localhost](http://localhost)
-    - **Backend**: [http://localhost:3001](http://localhost:3001)
+```bash
+cd solution
+docker compose up -d
+```
+*This starts DynamoDB Local on port 8000.*
+
+### Step 2: Start Backend
+Run the Express backend server.
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+4. Start the server:
+   ```bash
+   npm run dev
+   ```
+*The backend will start on [http://localhost:3001](http://localhost:3001).*
+
+### Step 3: Start Frontend
+Run the React frontend application.
+
+1. Open a new terminal and navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+*The frontend will start on [http://localhost:5173](http://localhost:5173) (or similar port).*
+
+---
 
 ## 2. AWS Deployment
 
-To deploy to AWS, we use Terragrunt. **Crucial:** You must deploy the ECR repository and push the Docker image *before* deploying the Lambda function.
+Deploy the application to AWS using Terragrunt and Docker.
 
 ### Prerequisites
-- AWS CLI configured (`aws configure`).
-- Terraform and Terragrunt installed.
-- Docker running.
+- AWS CLI configured (`aws configure`)
+- Terraform and Terragrunt installed
+- Docker running
 
-### Step 1: Provision ECR Repository
-First, we only create the Container Registry so we have a place to push our image.
+### Step 1: Deploy Infrastructure
+Deploy the full infrastructure (ECR, Lambda, DynamoDB, API Gateway, S3).
 
 ```bash
 cd solution/infrastructure/environments/dev
-terragrunt apply -target=module.ecr
-```
-Type `y` to confirm.
-
-### Step 2: Build and Push Docker Image
-Now that ECR exists, we build and push the backend image.
-
-1.  **Get ECR Login**:
-    ```bash
-    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
-    ```
-    *(Replace `<YOUR_ACCOUNT_ID>` with your actual AWS Account ID. You can find it by running `aws sts get-caller-identity`)*
-
-2.  **Build Image**:
-    ```bash
-    cd ../../../backend
-    docker build -t todo-list-backend-dev .
-    ```
-
-3.  **Tag Image**:
-    ```bash
-    docker tag todo-list-backend-dev:latest <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/todo-list-backend-dev:latest
-    ```
-
-4.  **Push Image**:
-    ```bash
-    docker push <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/todo-list-backend-dev:latest
-    ```
-
-### Step 3: Deploy Full Infrastructure
-Now that the image is in ECR, we can deploy the Lambda function and the rest of the infrastructure.
-
-```bash
-cd ../infrastructure/environments/dev
+terragrunt init
 terragrunt apply
 ```
-Type `y` to confirm.
+*Type `y` to confirm. This will automatically provision ECR and push a placeholder image to allow Lambda creation.*
 
-### Step 4: Deploy Frontend (S3)
-The infrastructure deployment created an S3 bucket for the frontend.
+### Step 2: Build and Deploy Backend
+Deploy the actual application code using the provided helper script.
 
-1.  **Build Frontend**:
-    ```bash
-    cd ../../../frontend
-    npm run build
-    ```
+```bash
+cd ../../../
+./deploy_backend.sh
+```
+*This script will automatically:*
+1. *Login to ECR*
+2. *Build the Docker image (amd64)*
+3. *Push the image to ECR*
+4. *Update the Lambda function*
 
-2.  **Sync to S3**:
-    Get the bucket name from the Terragrunt outputs (from Step 3).
-    ```bash
-    aws s3 sync dist/ s3://<YOUR_BUCKET_NAME>
-    ```
+### Step 4: Deploy Frontend
+Build and upload the frontend to the S3 bucket.
 
-3.  **Access App**:
-    Open the S3 website URL (or CloudFront URL if configured).
+1. **Update API URL**:
+   Update `solution/frontend/.env.production` with your new API Gateway URL:
+   ```
+   VITE_API_URL=<YOUR_API_ENDPOINT_FROM_STEP_3>
+   ```
 
-## 3. Troubleshooting
+2. **Build Frontend**:
+   ```bash
+   cd ../../../frontend
+   npm run build
+   ```
 
-- **Lambda Error: Image not found**: Ensure you pushed the image to ECR *before* deploying the Lambda module.
-- **500 Errors**: Check CloudWatch Logs for the Lambda function.
+3. **Sync to S3**:
+   ```bash
+   aws s3 sync dist/ s3://<YOUR_BUCKET_NAME>
+   ```
+   *Replace `<YOUR_BUCKET_NAME>` with the bucket name from Step 3 outputs.*
+
+4. **Access Application**:
+   Open the S3 website URL provided in the Terragrunt outputs.
