@@ -21,7 +21,7 @@ inputs = {
   
   # Lambda
   function_name = "todo-list-api-prod"
-  image_uri     = "${get_aws_account_id()}.dkr.ecr.us-east-1.amazonaws.com/todo-list-backend-prod:latest"
+  image_uri     = "${get_aws_account_id()}.dkr.ecr.ap-southeast-1.amazonaws.com/todo-list-backend-prod:latest"
   environment_variables = {
     NODE_ENV   = "production"
     TABLE_NAME = "todo-list-prod"

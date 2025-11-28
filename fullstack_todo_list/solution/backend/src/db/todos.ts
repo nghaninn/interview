@@ -1,5 +1,5 @@
 import { PutCommand, ScanCommand, GetCommand, DeleteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from 'crypto';
 import { docClient, TABLE_NAME } from "./dynamodb";
 import { Todo, CreateTodoRequest, UpdateTodoRequest } from "../types";
 
@@ -25,7 +25,7 @@ export const getTodoById = async (id: string): Promise<Todo | null> => {
 export const createTodo = async (todo: CreateTodoRequest): Promise<Todo> => {
     const timestamp = new Date().toISOString();
     const newTodo: Todo = {
-        id: uuidv4(),
+        id: randomUUID(),
         title: todo.title,
         completed: false,
         createdAt: timestamp,

@@ -21,10 +21,11 @@ inputs = {
   
   # Lambda
   function_name = "todo-list-api-dev"
-  image_uri     = "${get_aws_account_id()}.dkr.ecr.us-east-1.amazonaws.com/todo-list-backend-dev:latest"
+  image_uri     = "${get_aws_account_id()}.dkr.ecr.ap-southeast-1.amazonaws.com/todo-list-backend-dev:latest"
   environment_variables = {
     NODE_ENV   = "development"
     TABLE_NAME = "todo-list-dev"
+    CORS_ORIGIN = "http://todo-list-frontend-dev-994499184724.s3-website-ap-southeast-1.amazonaws.com"
   }
   
   # API Gateway
