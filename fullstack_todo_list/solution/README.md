@@ -22,11 +22,11 @@ The application utilizes a serverless architecture on AWS.
 graph TD
     User[User]
     subgraph Frontend_Zone [Frontend Hosting]
-        S3[S3 Bucket (Static Website)]
+        S3["S3 Bucket (Static Website)"]
     end
     subgraph Backend_Zone [Serverless Backend]
         APIG[API Gateway]
-        Lambda[AWS Lambda (Docker Image)]
+        Lambda["AWS Lambda (Docker Image)"]
         ECR[Amazon ECR]
         DB[(DynamoDB)]
     end
